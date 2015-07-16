@@ -1146,7 +1146,7 @@ private:
         }
     }
 
-    static std::size_t npos()
+    static constexpr std::size_t npos()
     {
         return ~0;
     }

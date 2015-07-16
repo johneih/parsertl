@@ -7,7 +7,7 @@
 #define PARSERTL_PARSER_HPP
 
 #include <stack>
-#include <stdexcept>
+#include "runtime_error.hpp"
 #include "state_machine.hpp"
 
 namespace parsertl
