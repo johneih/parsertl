@@ -7,6 +7,7 @@
 #define PARSERTL_PARSER_HPP
 
 #include <stack>
+#include <stdexcept>
 #include "state_machine.hpp"
 
 namespace parsertl
