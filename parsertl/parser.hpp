@@ -6,7 +6,9 @@
 #ifndef PARSERTL_PARSER_HPP
 #define PARSERTL_PARSER_HPP
 
+#include <iostream>
 #include <stack>
+#include <vector>
 #include "runtime_error.hpp"
 #include "state_machine.hpp"
 
@@ -49,14 +51,8 @@ struct parser
 
     state_machine sm;
     std::vector<std::size_t> stack;
-    std::size_t token_id;
-    state_machine::entry *entry;
-
-    parser() :
-        token_id(iterator::value_type::npos()),
-        entry(0)
-    {
-    }
+    std::size_t token_id{~static_cast<std::size_t>(0)};
+    state_machine::entry *entry{nullptr};
 
     void init(iterator &iter_)
     {
@@ -64,13 +60,18 @@ struct parser
         stack.push_back(0);
         token_id = iter_->id;
 
-        if (token_id == iterator::value_type::npos())
+		std::cout<<"initial token_id: "<<token_id<<"\n";
+
+        if (token_id == iter_->npos())
         {
-            entry = 0;
+            entry = nullptr;
         }
         else
         {
-            entry = &sm._table[stack.back() * sm._columns + token_id];
+			std::cout<<"initial entry at index: "<< stack.back() * sm._columns + token_id<<"\n";
+			entry = &sm._table[stack.back() * sm._columns + token_id];
+			std::cout<<"entry action: "<<entry->_action<<"\n"
+				<<"param: "<<entry->_param<<"\n";
         }
     }
 
@@ -152,9 +153,9 @@ struct parser
                 ++iter_;
                 token_id = iter_->id;
 
-                if (token_id == iterator::value_type::npos())
+                if (token_id == iter_->npos())
                 {
-                    entry = 0;
+                    entry = nullptr;
                 }
                 else
                 {

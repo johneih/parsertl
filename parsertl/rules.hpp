@@ -610,7 +610,7 @@ private:
                     const char_type *l_ = lhs_.c_str();
                     const char_type *r_ = rhs_.c_str();
 
-                    assert(0);
+//                    assert(0);
                     ss_ << "Syntax error in rule '";
                     narrow(l_, ss_);
                     ss_ << "': '";

@@ -1146,10 +1146,8 @@ private:
         }
     }
 
-    static constexpr std::size_t npos()
-    {
-        return ~0;
-    }
+	static std::size_t _npos{ ~static_cast<std::size_t>(0); };
+    static constexpr std::size_t npos(){ return _npos; }
 };
 
 typedef basic_generator<rules> generator;
