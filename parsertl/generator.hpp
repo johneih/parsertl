@@ -1135,7 +1135,7 @@ private:
         }
     }
 
-	static std::size_t _npos{ ~static_cast<std::size_t>(0); };
+	static const std::size_t _npos{~static_cast<std::size_t>(0)};
     static constexpr std::size_t npos(){ return _npos; }
 };
 

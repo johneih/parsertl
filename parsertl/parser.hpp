@@ -60,18 +60,13 @@ struct parser
         stack.push_back(0);
         token_id = iter_->id;
 
-		std::cout<<"initial token_id: "<<token_id<<"\n";
-
         if (token_id == iter_->npos())
         {
             entry = nullptr;
         }
         else
         {
-			std::cout<<"initial entry at index: "<< stack.back() * sm._columns + token_id<<"\n";
 			entry = &sm._table[stack.back() * sm._columns + token_id];
-			std::cout<<"entry action: "<<entry->_action<<"\n"
-				<<"param: "<<entry->_param<<"\n";
         }
     }
 
