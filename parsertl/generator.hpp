@@ -52,6 +52,11 @@ public:
 
         rewrite(rules_, start_, configs_, dfa_, terminals_, nt_enums_,
             new_old_map_);
+
+        // Make sure $accept is mapped.
+        if (start_[0] == '$')
+            new_old_map_[new_old_map_.size()] = grammar_.size() - 1;
+
         rules_.symbols(symbols_);
         enumerate_non_terminals(grammar_, terminals_.size(), nt_enums_);
         iter_ = nts_.find(start_);
@@ -298,6 +303,9 @@ private:
             const production &production_ = grammar_[trie_.second.first];
             prod *prod_ = 0;
 
+            // Don't include $accept
+            if (production_._lhs[0] == '$') continue;
+
             new_grammar_.push_back(prod());
             prod_ = &new_grammar_.back();
             prod_->_lhs = production_._lhs;
@@ -319,22 +327,22 @@ private:
             for (rhs_iter iter_ = production_._rhs.begin(),
                 end_ = production_._rhs.end(); iter_ != end_; ++iter_)
             {
+                std::size_t id_ = ~0;
+
                 prod_->_rhs_indexes.push_back(size_t_pair());
                 prod_->_rhs_indexes.back().first = index_;
 
                 switch (iter_->_type)
                 {
                     case rules::symbol::TERMINAL:
-                        index_ = dfa_[index_]._transitions.find
-                            (terminals_.find(iter_->_name)->
-                                second._id)->second;
+                        id_ = terminals_.find(iter_->_name)->second._id;
                         break;
                     case rules::symbol::NON_TERMINAL:
-                        index_ = dfa_[index_]._transitions.find(nt_enums_.find
-                            (iter_->_name)->second)->second;
+                        id_ = nt_enums_.find(iter_->_name)->second;
                         break;
                 }
 
+                index_ = dfa_[index_]._transitions.find(id_)->second;
                 prod_->_rhs_indexes.back().second = index_;
             }
         }
@@ -424,14 +432,12 @@ private:
         for (typename prod_deque::const_iterator iter_ = grammar_.begin(),
             end_ = grammar_.end(); iter_ != end_; ++iter_, ++dest_idx_)
         {
-            std::size_t idx_ = 0;
-
             for (typename grammar::const_iterator src_ = orig_.begin(),
-                src_end_ = orig_.end(); src_ != src_end_; ++src_, ++idx_)
+                src_end_ = orig_.end(); src_ != src_end_; ++src_)
             {
                 if (iter_->_lhs == src_->_lhs && iter_->_rhs == src_->_rhs)
                 {
-                    new_old_map_[dest_idx_] = idx_;
+                    new_old_map_[dest_idx_] = src_->_index;
                 }
             }
         }
